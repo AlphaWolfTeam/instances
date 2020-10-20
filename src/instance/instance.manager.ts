@@ -17,9 +17,7 @@ export class InstanceManager {
 
   static async create(collectionId: string, item: any) {
     const schema = await this.getSchema(config.schema.url, collectionId);
-    schema.schemaProperties.forEach((prop: IProperty) =>
-      this.propertyValidation(schema, item)
-    );
+    this.propertyValidation(schema, item);
     item = this.handleDefaultValues(schema, item);
     return await InstanceRepository.create(schema.schemaName, item);
   }
