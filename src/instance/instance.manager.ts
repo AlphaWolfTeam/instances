@@ -36,7 +36,7 @@ export class InstanceManager {
     schemaApiBaseUrl: string,
     collectionName: string
   ): Promise<ISchema> {
-    return axios.get(`${schemaApiBaseUrl}/api/schema/${collectionName}`);
+    return await axios.get(`${schemaApiBaseUrl}/api/schema/${collectionName}`);
   }
 
   private static handleDefaultValues(schema: ISchema, item: any) {
