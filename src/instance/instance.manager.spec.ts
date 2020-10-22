@@ -1,39 +1,58 @@
-import { expect } from "chai";
-import { InstanceManager } from "./instance.manager";
-import { config } from "../config";
-import { DBHandler } from "../utils/dbHandler";
+// import { expect } from "chai";
+// import { InstanceManager } from "./instance.manager";
+// import { config } from "../config";
+// import { DBHandler } from "../utils/dbHandler";
+// import { ISchema } from "../utils/schema.interface";
 
-const validInstance = {
-  InstanceName: "Instance name",
-};
-const validInstance2 = {
-  InstanceName: "Instance2 name",
-};
-const validInstance3 = {
-  InstanceName: "Instance3 name",
-};
-const validInstance4 = {
-  InstanceName: "Instance4 name",
-};
-const validInstance5 = {
-  InstanceName: "Instance5 name",
-};
-const validInstance6 = {
-  InstanceName: "Instance6 name",
-};
-const validInstance7 = {
-  InstanceName: "Instance7 name",
-};
+// const validInstance = {
+//   PropTest: "Instance name",
+// };
+// const validInstance2 = {
+//   InstanceName: "Instance2 name",
+// };
+// const validInstance3 = {
+//   InstanceName: "Instance3 name",
+// };
+// const validInstance4 = {
+//   InstanceName: "Instance4 name",
+// };
+// const validInstance5 = {
+//   InstanceName: "Instance5 name",
+// };
+// const validInstance6 = {
+//   InstanceName: "Instance6 name",
+// };
+// const validInstance7 = {
+//   PropTest: "Instance7 name",
+// };
 
-const collectionName = "test";
+// const collectionName = "test";
 
 // describe("create instance --> Manager", () => {
 //   context("When instance is valid", () => {
 //     before(async () => await DBHandler.connect(config.db.uri));
 //     after(async () => await DBHandler.disconnect());
 //     it("Should create new instance", async () => {
+//       const schema: ISchema = {
+//         _id: "11111111111",
+//         schemaName: "SchemaTest",
+//         schemaProperties: [
+//           {
+//             _id: "2222222222222",
+//             propertyName: "PropTest",
+//             propertyType: "string",
+//             isUnique: false,
+//             createdAt: new Date(),
+//             updatedAt: new Date(),
+//           },
+//         ],
+//         createdAt: new Date(),
+//         updatedAt: new Date(),
+//       };
 //       const res = await InstanceManager.create(collectionName, validInstance);
-//       expect(res).to.have.property("InstanceName");
+//       console.log(res);
+      
+//       expect(res).to.have.property("PropTest");
 //     });
 //   });
 // });
