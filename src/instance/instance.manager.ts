@@ -32,14 +32,27 @@ export class InstanceManager {
     return await InstanceRepository.delete(collectionName, id);
   }
 
+  /**
+   * Returns the schema from schema-api.
+   * @param schemaApiBaseUrl the base url to the schema-api.
+   * @param collectionId the collection id of the schema.
+   */
   private static async getSchema(
     schemaApiBaseUrl: string,
-    collectionName: string
+    collectionId: string
   ): Promise<ISchema> {
-    return await axios.get(`${schemaApiBaseUrl}/api/schema/${collectionName}`);
+    return await axios.get(`${schemaApiBaseUrl}/api/schema/${collectionId}`);
   }
 
+  /**
+   * Returns the item with implemented default values.
+   * @param schema the schema that contains all the default values.
+   * @param item the item to implement default value on.
+   */
   private static handleDefaultValues(schema: ISchema, item: any) {
+    // Returns true if the value is empty.
+    // This function was created due to the fact that if there is a false value,
+    // the function will still return false (non empty value).
     function isEmpty(val: any) {
       return val === undefined || val == null || val.length <= 0;
     }
@@ -56,6 +69,12 @@ export class InstanceManager {
     return item;
   }
 
+  /**
+   * Validate each property in itemToInsert if is satisfying the schema property requirements.
+   * Throws a ValidationError if there is an invalid property.
+   * @param schema the schema to validate with.
+   * @param itemToInsert the item to validate.
+   */
   private static async propertyValidation(
     schema: ISchema,
     itemToInsert: any

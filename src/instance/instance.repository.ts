@@ -33,6 +33,11 @@ export class InstanceRepository {
     return (await DBHandler.deleteDocument(collectionName, id)).result;
   }
 
+  /**
+   * Returns the item with "id" field instead of "_id" for more generic implementation.
+   * (good for cases like changing the db and more)
+   * @param item the item that the "_id" field will be changed to "id".
+   */
   private static toId(item: any) {
     if (item && item._id) {
       item.id = item._id;

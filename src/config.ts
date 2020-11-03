@@ -4,7 +4,7 @@ export const config = {
   },
   serviceName: "instance",
   db: {
-    uri: process.env.DB_URI || 'mongodb://NullTest-ip:27017/functions',
+    uri: process.env.DB_URI || 'mongodb://NullTest-ip:27017/instances',
     user: process.env.DB_USER || 'RandUser',
     pass: process.env.DB_PASS || 'RandPass'
   },

@@ -9,7 +9,6 @@ import {
   unknownErrorHandler,
 } from "./utils/errors/handler";
 import cors from "cors";
-import { authorizationMiddleware } from "./utils/authorization";
 import { AppRouter } from "./router";
 
 export class Server {
@@ -34,7 +33,7 @@ export class Server {
       });
       next();
     });
-    this.app.use("/api", authorizationMiddleware, AppRouter);
+    this.app.use("/api", AppRouter);
     this.initializeErrorHandler();
     this.server = http.createServer(this.app);
     this.server.listen(config.port, () =>
