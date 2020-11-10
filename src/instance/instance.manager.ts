@@ -5,6 +5,7 @@ import { IProperty, ISchema } from "../utils/schema.interface";
 import { ObjectId } from "mongodb";
 import { ValidationError } from "../utils/errors/user";
 import { validationFactory } from "./validation/validation.factory";
+import { isEmpty } from "../utils/propsValidation";
 
 export class InstanceManager {
   static async find(collectionName: string, cond: {}) {
@@ -50,13 +51,6 @@ export class InstanceManager {
    * @param item the item to implement default value on.
    */
   private static handleDefaultValues(schema: ISchema, item: any) {
-    // Returns true if the value is empty.
-    // This function was created due to the fact that if there is a false value,
-    // the function will still return false (non empty value).
-    function isEmpty(val: any) {
-      return val === undefined || val == null || val.length <= 0;
-    }
-
     const defaultedItems = schema.schemaProperties.filter(
       (prop: IProperty) => !isEmpty(prop.defaultValue)
     );
@@ -88,44 +82,52 @@ export class InstanceManager {
       numberOfRequiredSchemaProps <= numberOfInputProps &&
       numberOfInputProps <= numberOfSchemaProps;
 
+    if (!isNumberOfPropsValid) {
+      throw new ValidationError();
+    }
+
     const isEveryPropValid = schema.schemaProperties.every(async function (
       schemaProp: IProperty
     ): Promise<boolean> {
       const itemProp = itemToInsert[schemaProp.propertyName];
-      if (!itemProp) {
+      if (isEmpty(itemProp)) {
         return !!schemaProp.required;
       } else {
+        // Does not catch ObjectId
         const isItemTypeValid =
           Object.prototype.toString.call(itemProp) ===
           `[object ${schemaProp.propertyType}]`;
-        const isValueIncludedInEnum = schemaProp.enum?.some(
-          (enumVal: any) => enumVal === itemProp
-        );
-        if (isItemTypeValid && isValueIncludedInEnum) {
+        const isValidatedEnum =
+          (schemaProp.enum?.some((enumVal: any) => enumVal === itemProp) &&
+            schemaProp.enum) ||
+          !schemaProp.enum;
+        if (isItemTypeValid && isValidatedEnum) {
           if (!schemaProp.validation) {
             return true;
           }
           const validate = validationFactory(schemaProp.propertyType);
           return validate(itemProp, schemaProp.validation);
-        } else if (ObjectId.isValid(itemProp)) {
-          if (schemaProp.propertyRef) {
-            try {
-              const isValidReference = !!(await InstanceManager.findById(
-                schemaProp.propertyRef,
-                itemProp
-              ));
-              return isValidReference;
-            } catch (e) {
-              return false;
-            }
+        } else if (
+          ObjectId.isValid(itemProp) &&
+          schemaProp.propertyRef &&
+          isValidatedEnum
+        ) {
+          // In case of ObjectId, validate if exists in ref
+          try {
+            const isValidReference = !!(await InstanceManager.findById(
+              schemaProp.propertyRef,
+              itemProp
+            ));
+            return isValidReference;
+          } catch (e) {
+            return false;
           }
-          return true;
         }
         return false;
       }
     });
 
-    if (!isNumberOfPropsValid || !isEveryPropValid) {
+    if (!isEveryPropValid) {
       throw new ValidationError();
     }
   }
